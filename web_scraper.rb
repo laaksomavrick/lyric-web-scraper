@@ -1,12 +1,11 @@
-#get all smiths lyrics
-#parse into mungeable format
-#find all lines below 140 characters
-#sanitize
-#create "database"
+#this is an awful script, 
+#but it's a one off for getting the lyrics, 
+#and it works
 
 require 'HTTParty'
 require 'Nokogiri'
 require 'JSON'
+
 
 directory = HTTParty.get('https://www.azlyrics.com/s/smiths.html')
 parsed_directory = Nokogiri::HTML(directory)
@@ -23,19 +22,35 @@ parsed_directory.css('a').each do |element|
     end
 end
 
-temp = song_urls[0]
+song_urls.each do |url|
 
-target = "https://www.azlyrics.com#{temp}"
+    p url
 
-html = HTTParty.get(target)
-parsed = Nokogiri::HTML(html)
+    target = "https://www.azlyrics.com#{url}"
+    
+    html = HTTParty.get(target)
+    parsed = Nokogiri::HTML(html)
+    
+    parsed_string = parsed.to_s
+    
+    marker_one = '<!-- Usage of azlyrics.com content by any third-party lyrics provider is prohibited by our licensing agreement. Sorry about that. -->'
+    marker_two = '</div>'
+    
+    rough_lyrics = parsed_string[/#{marker_one}(.*?)#{marker_two}/m, 1]
+    lines = rough_lyrics.split('<br>')
+    
+    lyric_blocks = lines.map do |line|
+        if line == "\n"
+            line
+        else
+            line.strip
+        end
+    end
+    
+    File.open("lyrics.txt", "a") do |f|
+        lyric_blocks.each { |element| f.puts(element) }
+    end
 
-parsed_string = parsed.to_s
+    sleep(5)
 
-marker_one = '<!-- Usage of azlyrics.com content by any third-party lyrics provider is prohibited by our licensing agreement. Sorry about that. -->'
-marker_two = '</div>'
-
-rough_lyrics = parsed_string[/#{marker_one}(.*?)#{marker_two}/m, 1]
-lines = rough_lyrics.split('<br>')
-
-open('lyrics.txt', 'w') { |f| f << lines } 
+end
