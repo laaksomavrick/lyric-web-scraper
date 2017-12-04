@@ -2,10 +2,10 @@ require 'rubygems'
 require 'twitter'
 
 client = Twitter::REST::Client.new do |config|
-  config.consumer_key = "okIVPx8eRVYebClYFBw59v3UE"
-  config.consumer_secret = "7SRvGMiGCDJcUZYsNGDW03K3qSOvL5tuYaqzXRyoyjxcKgQuJT"
-  config.access_token = "937512616498360320-J8DKEmRsep28oCIErr1hmnPoBEKWZ2a"
-  config.access_token_secret = "jPs7aSSlkRGHFgWUknAOca23hprQRuKpHptrcMlYLZJo6"
+  config.consumer_key = ""
+  config.consumer_secret = ""
+  config.access_token = ""
+  config.access_token_secret = ""
 end
 
 lyric_blocks = []
